@@ -13,5 +13,21 @@ class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
         assertEquals(4, 2 + 2)
+
+        var t :A = B();
+        t.tt()
+    }
+
+    open class A{
+        open fun tt(){
+            System.out.println("aaaaa")
+        }
+    }
+
+    class B : A(){
+        override fun tt() {
+            super.tt()
+            System.out.println("BBBBB")
+        }
     }
 }

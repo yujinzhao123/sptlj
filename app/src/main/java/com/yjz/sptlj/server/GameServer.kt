@@ -3,11 +3,12 @@ package com.yjz.sptlj.server
 import android.util.Log
 import com.koushikdutta.async.AsyncServer
 import com.koushikdutta.async.callback.CompletedCallback
+import com.koushikdutta.async.http.WebSocket
 import com.koushikdutta.async.http.server.AsyncHttpServer
 import com.yjz.sptlj.GameManager
 import com.yjz.sptlj.User
-import java.util.AbstractList
-import java.util.ArrayList
+import com.yjz.sptlj.tool.ActionTool
+import com.yjz.sptlj.tool.HttpJsonBean
 
 /**
  *
@@ -29,11 +30,7 @@ object GameServer {
     }
 
 
-
-    lateinit var manager :GameManager
-
-
-
+    lateinit var manager: GameManager
 
 
 //    fun changeSeat(user: User,nb:Int){
@@ -58,7 +55,7 @@ object GameServer {
         this.gameCallBack = gameCallBack;
         manager = GameManager(gameCallBack);
         httpServer.errorCallback = errorCallback
-        httpServer.websocket(Const.REGEX) { webSocket, request ->
+        httpServer.websocket("/live") { webSocket, request ->
 
             /**
              * 1.是不是房间内用户重连
@@ -85,23 +82,25 @@ object GameServer {
 //                }
 //            }
 
-//            webSocket.stringCallback = WebSocket.StringCallback { s ->
-//                Log.e("yyyy", "oooL$s")
-//                //                        if ("Hello Server".equals(s))
-//                //                        webSocket.send("Welcome Client!");
-//
-////                val httpJsonBean = HttpJsonBean(s, MouseBean::class.java)
-////                val mouse = httpJsonBean.getBean()
-////                if (mouse != null) {
-////                    val msg = Message()
-////                    val data = Bundle()
-////                    data.putString("bean", s)
-////                    msg.data = data
-////                    handler.sendMessage(msg)
-//
-//            }
+            webSocket.stringCallback = WebSocket.StringCallback { s ->
+                Log.e("yyyy", "收到客户端发送的消息$s")
+
+
+                var httpJsonBean = HttpJsonBean<ActionBean>(s, ActionBean::class.java)
+                var actionBean = httpJsonBean.bean
+                if (httpJsonBean.bean == null) return@StringCallback
+
+                when (actionBean.action) {
+                    ActionTool.ACTION_JOIN -> {
+                        var user = HttpJsonBean<User>(actionBean.data, User::class.java).bean
+                        if (user == null) return@StringCallback
+                        manager.joinTheRoom(user,webSocket)
+                    }
+                }
+
+            }
         }
-        httpServer.listen(AsyncServer.getDefault(), Const.port)
+        httpServer.listen(AsyncServer.getDefault(), 1234)
     }
 
 

@@ -8,6 +8,9 @@ package com.yjz.sptlj.server
  */
 class Const {
     companion object {
+
+        val uid = android.os.Build.SERIAL;
+
         val REGEX = "sp"
         val port = 3241
     }

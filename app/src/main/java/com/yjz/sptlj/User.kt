@@ -2,6 +2,7 @@ package com.yjz.sptlj
 
 import com.alibaba.fastjson.annotation.JSONField
 import com.koushikdutta.async.http.WebSocket
+import com.yjz.sptlj.server.Const
 
 /**
  *
@@ -43,7 +44,7 @@ class User {
      * 根据id，判断是不是自己
      */
     fun isMy(): Boolean {
-        return (android.os.Build.SERIAL).equals(id)
+        return (Const.uid).equals(id)
     }
 
 }

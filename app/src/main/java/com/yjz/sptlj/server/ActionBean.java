@@ -6,4 +6,10 @@ package com.yjz.sptlj.server;
  * @CreateUser: yujinzhao
  */
 public class ActionBean {
+
+
+
+    public int action;
+
+    public String data;
 }

@@ -2,9 +2,13 @@ package com.yjz.sptlj;
 
 import android.util.Log;
 import com.alibaba.fastjson.JSON;
+import com.koushikdutta.async.http.WebSocket;
+import com.yjz.sptlj.server.Const;
 import com.yjz.sptlj.server.GameCallBack;
 import com.yjz.sptlj.server.UiBean;
+import com.yjz.sptlj.tool.ActionTool;
 import com.yjz.sptlj.tool.HttpJsonBean;
+import com.yjz.sptlj.tool.UiBeanTool;
 
 import java.util.ArrayList;
 
@@ -20,7 +24,8 @@ public class GameManager {
     ArrayList<User> users;
 
     /*** 选座位**/
-    public static final int SELECT_SEAT = 0;
+    public static final int SELECT_SEAT = 1;
+
 
     /**
      * 0->选座
@@ -34,16 +39,37 @@ public class GameManager {
         this.callBack = callBack;
         users = new ArrayList<>();
 
-        User user = new User("主机", android.os.Build.SERIAL);
+        User user = new User("主机", Const.Companion.getUid());
         user.setHost(true);
         users.add(user);
 
         gameStatus = SELECT_SEAT;
         sendSeatUiData();
+    }
+
+
+    public void joinTheRoom(User user, WebSocket webSocket) {
+
+        User u = findUser(user.getId());
+        if (u != null) {
+            //说明是重连用户，替换最新的socket
+            webSocket.send(UiBeanTool.sendToast("又 回来了 老弟？"));
+            u.setWebSocket(webSocket);
+            return;
+        }
+
+        if (gameStatus != SELECT_SEAT || users.size() >= 4) {
+            //游戏已经开始了，或者房间满员了，不允许加入
+            webSocket.send(UiBeanTool.sendToast("房间已满，GUN~"));
+            webSocket.end();
+            return;
+        }
+
+        //新用户进入
+        users.add(user);
 
 
     }
-
 
     public void changeSeat(String address, int nb) {
 
@@ -90,8 +116,8 @@ public class GameManager {
         uiBean.type = SELECT_SEAT;
         uiBean.data = JSON.toJSONString(users);
         String test = JSON.toJSONString(users);
-        Log.e("hhh",test);
-        Log.e("hhh","Size:"+ new HttpJsonBean<User>(test,User.class).getBeanList().size());
+        Log.e("hhh", test);
+        Log.e("hhh", "Size:" + new HttpJsonBean<User>(test, User.class).getBeanList().size());
 
 
         return JSON.toJSONString(uiBean);

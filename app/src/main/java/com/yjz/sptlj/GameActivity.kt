@@ -1,12 +1,10 @@
 package com.yjz.sptlj
 
-import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.TextView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_game.*
-import kotlinx.android.synthetic.main.activity_main.*
 
 /**
  *
@@ -30,23 +28,25 @@ class GameActivity : AppCompatActivity(), GameView {
 
     override fun showSelectSeat(users: MutableList<User>) {
 
-        for (zw in zws) {
-            zw.text = ""
-        }
-
-        var isMyZw0 = false
-        var my: User? = null
-        for (u in users) {
-
-            if (u.isMy() && u.seat == 0) {
-                isMyZw0 = true
-                my = u;
+        runOnUiThread {
+            for (zw in zws) {
+                zw.text = ""
             }
 
-            zws[u.seat].text = u.name
-        }
-        if (isMyZw0 && my != null) {
-            zws[0].text = my.name
+            var isMyZw0 = false
+            var my: User? = null
+            for (u in users) {
+
+                if (u.isMy() && u.seat == 0) {
+                    isMyZw0 = true
+                    my = u;
+                }
+
+                zws[u.seat].text = u.name
+            }
+            if (isMyZw0 && my != null) {
+                zws[0].text = my.name
+            }
         }
 
 
@@ -61,15 +61,24 @@ class GameActivity : AppCompatActivity(), GameView {
     }
 
     private lateinit var presenter: Presenter
+    var isHost = false
+    var name = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         supportActionBar!!.hide()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
+        name = intent.getStringExtra("name")
 
         initView()
-        presenter = Presenter(this, this)
-        presenter.createServer()
+
+        isHost = intent.getBooleanExtra("isHost", false)
+        if (isHost) {
+            presenter = Presenter(this, this,"")
+        }else{
+            presenter =ClientPresenter(this,this,name)
+        }
+        presenter.connectServer()
 
 
     }
@@ -78,7 +87,7 @@ class GameActivity : AppCompatActivity(), GameView {
     private fun initView() {
 
         zws = arrayOf(weizhi0, weizhi1, weizhi2, weizhi3, weizhi4)
-        for (i in zws.indices){
+        for (i in zws.indices) {
             zws[i].setOnClickListener { presenter.huanzuowei(i) }
         }
     }

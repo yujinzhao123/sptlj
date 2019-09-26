@@ -1,11 +1,13 @@
 package com.yjz.sptlj;
 
 import android.content.Context;
+import android.support.annotation.UiThread;
 import android.util.Log;
 import com.yjz.sptlj.server.GameCallBack;
 import com.yjz.sptlj.server.GameServer;
 import com.yjz.sptlj.server.UiBean;
 import com.yjz.sptlj.tool.HttpJsonBean;
+import com.yjz.sptlj.tool.UiBeanTool;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -17,15 +19,18 @@ import java.util.List;
  */
 public class Presenter {
 
-    private final GameView view;
-    private final Context context;
+    public final GameView view;
+    public final Context context;
+    public final String name;
 
-    public Presenter(GameView view, Context context) {
+    public Presenter(GameView view, Context context,String name) {
         this.view = view;
         this.context = context;
+        this.name = name;
     }
 
-    public void createServer() {
+
+    public void connectServer() {
         GameServer.INSTANCE.createServer(gameCallBack);
     }
 
@@ -33,10 +38,11 @@ public class Presenter {
         GameServer.INSTANCE.getManager().changeSeat("00fa8dfd9f5b2fd1",index);
     }
 
-    private GameCallBack gameCallBack = new GameCallBack() {
+    GameCallBack gameCallBack = new GameCallBack() {
 
         @Override
         public void msg(@NotNull String data) {
+
 
             HttpJsonBean<UiBean> jsonBean = new HttpJsonBean<>(data, UiBean.class);
             UiBean uiBean = jsonBean.getBean();
@@ -46,6 +52,8 @@ public class Presenter {
                     HttpJsonBean<User> httpJsonBean = new HttpJsonBean<>(uiBean.data,User.class);
                     List<User> users = httpJsonBean.getBeanList();
                     view.showSelectSeat(users);
+                    break;
+                case UiBeanTool.ACTION_TOAST:
                     break;
             }
 
