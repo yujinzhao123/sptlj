@@ -16,8 +16,6 @@ public class UiBeanTool {
      * 发送toast
      * @param msg
      * @return
-     *
-     * todo 应该放在UIBean里 不属于动作
      */
     public static String sendToast(String msg){
         UiBean bean = new UiBean();

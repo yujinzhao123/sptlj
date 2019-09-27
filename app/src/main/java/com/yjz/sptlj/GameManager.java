@@ -66,9 +66,23 @@ public class GameManager {
         }
 
         //新用户进入
+        user.setWebSocket(webSocket);
         users.add(user);
+        //
+        sendSeatUiData();
 
 
+    }
+
+    /**
+     * 给用户发消息
+     */
+    public void sendMsg(User user,String data){
+        if (user.isHost()){
+            callBack.msg(data);
+        }else {
+            user.getWebSocket().send(data);
+        }
     }
 
     public void changeSeat(String address, int nb) {
@@ -79,6 +93,7 @@ public class GameManager {
         for (User u : users) {
             if (u.getSeat() == nb) {
                 //座位上有人 不往后执行
+                sendMsg(user,UiBeanTool.sendToast("座位上有人 心里没点逼数？"));
                 return;
             }
         }
@@ -154,4 +169,11 @@ public class GameManager {
         return false;
     }
 
+    /**
+     * 开始游戏
+     */
+    public void startGame() {
+
+
+    }
 }

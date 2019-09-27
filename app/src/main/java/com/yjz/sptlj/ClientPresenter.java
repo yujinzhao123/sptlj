@@ -37,12 +37,13 @@ public class ClientPresenter extends Presenter {
     @Override
     public void huanzuowei(int index) {
 
+        socket.send(ActionTool.changeSeat(Const.Companion.getUid(),index));
     }
 
     private void connect() {
 
 
-        AsyncHttpClient.getDefaultInstance().websocket("ws://192.168.0.103:1234/live", (String) null, new AsyncHttpClient.WebSocketConnectCallback() {
+        AsyncHttpClient.getDefaultInstance().websocket("ws://192.168.31.41:1234/live", (String) null, new AsyncHttpClient.WebSocketConnectCallback() {
 
             @Override
             public void onCompleted(Exception ex, final WebSocket webSocket) {

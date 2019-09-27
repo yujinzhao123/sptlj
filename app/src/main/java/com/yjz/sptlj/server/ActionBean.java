@@ -11,5 +11,7 @@ public class ActionBean {
 
     public int action;
 
+    public String uid;
+
     public String data;
 }

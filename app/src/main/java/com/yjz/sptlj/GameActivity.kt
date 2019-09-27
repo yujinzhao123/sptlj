@@ -2,6 +2,7 @@ package com.yjz.sptlj
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_game.*
@@ -75,6 +76,10 @@ class GameActivity : AppCompatActivity(), GameView {
         isHost = intent.getBooleanExtra("isHost", false)
         if (isHost) {
             presenter = Presenter(this, this,"")
+            startBtn.visibility = View.VISIBLE
+            startBtn.setOnClickListener {
+                presenter.startGame()
+            }
         }else{
             presenter =ClientPresenter(this,this,name)
         }

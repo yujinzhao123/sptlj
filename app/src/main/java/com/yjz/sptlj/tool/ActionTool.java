@@ -16,11 +16,22 @@ public class ActionTool {
      * 加入房间
      */
     public static final int ACTION_JOIN = 0;
+    /**
+     * 换座位
+     **/
+    public static final int ACTION_CHANGE_SEAT = 1;
+
+    public static String changeSeat(String id, int nb) {
+        ActionBean bean = new ActionBean();
+        bean.action = ACTION_CHANGE_SEAT;
+        bean.uid = id;
+        bean.data = nb + "";
+
+        return JSON.toJSONString(bean);
+    }
 
 
-
-
-    public static String joinRoom(String name){
+    public static String joinRoom(String name) {
         ActionBean bean = new ActionBean();
         bean.action = ACTION_JOIN;
 

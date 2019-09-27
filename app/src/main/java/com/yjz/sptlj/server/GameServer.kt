@@ -96,6 +96,9 @@ object GameServer {
                         if (user == null) return@StringCallback
                         manager.joinTheRoom(user,webSocket)
                     }
+                    ActionTool.ACTION_CHANGE_SEAT ->{
+                        manager.changeSeat(actionBean.uid,actionBean.data.toInt())
+                    }
                 }
 
             }
