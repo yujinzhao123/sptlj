@@ -16,6 +16,17 @@ class ExampleUnitTest {
 
         var t :A = B();
         t.tt()
+
+        var count = 2//正式作为上的人数
+
+
+        //测试用的，没到4个人 创建假玩家
+        for (i in count..3) {
+
+            System.out.println("iii:"+i)
+
+        }
+
     }
 
     open class A{

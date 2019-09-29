@@ -3,6 +3,8 @@ package com.yjz.sptlj
 import com.alibaba.fastjson.annotation.JSONField
 import com.koushikdutta.async.http.WebSocket
 import com.yjz.sptlj.server.Const
+import com.yjz.sptlj.tool.Card
+import java.util.ArrayList
 
 /**
  *
@@ -18,7 +20,7 @@ class User {
      */
     var isHost = false
 
-    @JSONField(serialize=false)
+    @JSONField(serialize = false)
     var webSocket: WebSocket? = null
 
     var name: String
@@ -28,12 +30,14 @@ class User {
     /**
      * 0未上座，总共1234座位
      */
-    var seat:Int = 0
+    var seat: Int = 0
 
-    constructor(){
+    constructor() {
         this.name = ""
         this.id = ""
     }
+
+    var cards: ArrayList<Card> = ArrayList()
 
     constructor(name: String, id: String) {
         this.name = name

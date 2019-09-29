@@ -26,7 +26,7 @@ public class Presenter {
     public final Context context;
     public final String name;
 
-    public Presenter(GameView view, Context context,String name) {
+    public Presenter(GameView view, Context context, String name) {
         this.view = view;
         this.context = context;
         this.name = name;
@@ -37,11 +37,11 @@ public class Presenter {
         GameServer.INSTANCE.createServer(gameCallBack);
     }
 
-    public void huanzuowei(int index){
-        GameServer.INSTANCE.getManager().changeSeat(Const.Companion.getUid(),index);
+    public void huanzuowei(int index) {
+        GameServer.INSTANCE.getManager().changeSeat(Const.Companion.getUid(), index);
     }
 
-    public void startGame(){
+    public void startGame() {
         GameServer.INSTANCE.getManager().startGame();
     }
 
@@ -50,23 +50,26 @@ public class Presenter {
         @Override
         public void msg(@NotNull final String data) {
 
-            ((Activity)context).runOnUiThread(new Runnable() {
+            ((Activity) context).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
 
                     HttpJsonBean<UiBean> jsonBean = new HttpJsonBean<>(data, UiBean.class);
                     UiBean uiBean = jsonBean.getBean();
                     if (uiBean == null) return;
-                    switch (uiBean.type){
+                    switch (uiBean.type) {
                         case GameManager.SELECT_SEAT:
-                            HttpJsonBean<User> httpJsonBean = new HttpJsonBean<>(uiBean.data,User.class);
+                            HttpJsonBean<User> httpJsonBean = new HttpJsonBean<>(uiBean.data, User.class);
                             List<User> users = httpJsonBean.getBeanList();
                             view.showSelectSeat(users);
                             break;
+
                         case UiBeanTool.ACTION_TOAST:
-
                             Toast.makeText(context, uiBean.data, Toast.LENGTH_SHORT).show();
+                            break;
 
+                        case UiBeanTool.DEAL_CARD:
+                            Log.e("yjz",uiBean.data);
                             break;
                     }
 
